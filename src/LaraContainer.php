@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Speedowork\Container;
+namespace Speedwork\Container;
 
 use ArrayAccess;
 use Closure;
@@ -118,6 +118,20 @@ class LaraContainer implements ArrayAccess
      * @var array
      */
     protected $afterResolvingCallbacks = [];
+
+    /**
+     * All of the registered service providers.
+     *
+     * @var array
+     */
+    protected $serviceProviders = [];
+
+    /**
+     * The names of the loaded service providers.
+     *
+     * @var array
+     */
+    protected $loadedProviders = [];
 
     /**
      * Determine if the given abstract type has been bound.
@@ -736,6 +750,7 @@ class LaraContainer implements ArrayAccess
      */
     public function build($concrete, array $parameters = [])
     {
+
         // If the concrete type is actually a Closure, we will just execute it and
         // hand back the results of the functions, which allows functions to be
         // used as resolvers for more fine-tuned resolution of these objects.
@@ -1181,7 +1196,6 @@ class LaraContainer implements ArrayAccess
                 return $value;
             };
         }
-
         $this->bind($key, $value);
     }
 
@@ -1196,25 +1210,87 @@ class LaraContainer implements ArrayAccess
     }
 
     /**
-     * Dynamically access container services.
+     * Register a service provider with the application.
      *
-     * @param string $key
+     * @param \Illuminate\Support\ServiceProvider|string $provider
+     * @param array                                      $options
+     * @param bool                                       $force
      *
-     * @return mixed
+     * @return \Illuminate\Support\ServiceProvider
      */
-    public function __get($key)
+    public function register($provider, $options = [], $force = false)
     {
-        return $this[$key];
+        if ($registered = $this->getProvider($provider) && !$force) {
+            return $registered;
+        }
+
+        // If the given "provider" is a string, we will resolve it, passing in the
+        // application instance automatically for the developer. This is simply
+        // a more convenient way of specifying your service provider classes.
+        if (is_string($provider)) {
+            $provider = $this->resolveProviderClass($provider);
+        }
+
+        $provider->register();
+
+        // Once we have registered the service we will iterate through the options
+        // and set each of them on the application so they will be available on
+        // the actual loading of the service objects and for developer usage.
+        foreach ($options as $key => $value) {
+            $this[$key] = $value;
+        }
+
+        $this->markAsRegistered($provider);
+
+        // If the application has already booted, we will call this boot method on
+        // the provider class so it has an opportunity to do its boot logic and
+        // will be ready for any usage by the developer's application logics.
+        if ($this->booted) {
+            $this->bootProvider($provider);
+        }
+
+        return $provider;
     }
 
     /**
-     * Dynamically set container services.
+     * Get the registered service provider instance if it exists.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param \Illuminate\Support\ServiceProvider|string $provider
+     *
+     * @return \Illuminate\Support\ServiceProvider|null
      */
-    public function __set($key, $value)
+    public function getProvider($provider)
     {
-        $this[$key] = $value;
+        $name = is_string($provider) ? $provider : get_class($provider);
+
+        return Arr::first($this->serviceProviders, function ($key, $value) use ($name) {
+            return $value instanceof $name;
+        });
+    }
+
+    /**
+     * Resolve a service provider instance from the class name.
+     *
+     * @param string $provider
+     *
+     * @return \Illuminate\Support\ServiceProvider
+     */
+    public function resolveProviderClass($provider)
+    {
+        return new $provider($this);
+    }
+
+    /**
+     * Mark the given provider as registered.
+     *
+     * @param \Illuminate\Support\ServiceProvider $provider
+     */
+    protected function markAsRegistered($provider)
+    {
+        //$this['events']->fire($class = get_class($provider), [$provider]);
+
+        $this->serviceProviders[] = $provider;
+
+        $this->loadedProviders[$class] = true;
     }
 }

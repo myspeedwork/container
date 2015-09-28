@@ -14,7 +14,7 @@ namespace Speedwork\Container;
 /**
  * @author sankar <sankar.suda@gmail>
  */
-class Container extends PimpleContainer
+class Container extends SpeedContainer
 {
     /**
      * @param string $id
@@ -37,7 +37,7 @@ class Container extends PimpleContainer
             return $this[$key];
         }
 
-        return Registry::get($key);
+        return;
     }
 
     /**

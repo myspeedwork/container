@@ -17,12 +17,53 @@ namespace Speedwork\Container;
 abstract class ServiceProvider
 {
     /**
+     * The application instance.
+     */
+    protected $app;
+
+    /**
+     * The Service Provider config.
+     */
+    protected $config;
+
+    /**
+     * Create a new service provider instance.
+     *
+     * @param \Speedwork\Container\Container $app
+     */
+    public function setContainer(Container $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
+     * Set Config.
+     *
+     * @param array $config [description]
+     */
+    public function setConfig($config = [])
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Register a translation file namespace.
+     *
+     * @param string $path
+     * @param string $namespace
+     */
+    protected function loadTranslationsFrom($path, $namespace)
+    {
+        $this->app['translator']->addNamespace($namespace, $path);
+    }
+
+    /**
      * Registers services on the given container.
      *
      * This method should only be used to configure services and parameters.
      * It should not get services.
      *
-     * @param Container $pimple An Container instance
+     * @param Container
      */
-    abstract public function register(Container $di);
+    abstract public function register(Container $app);
 }

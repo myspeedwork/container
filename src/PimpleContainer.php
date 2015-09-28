@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Speedowork\Container;
+namespace Speedwork\Container;
 
 /**
  * Container main class.
@@ -249,8 +249,8 @@ class PimpleContainer implements \ArrayAccess
     /**
      * Registers a service provider.
      *
-     * @param ServiceProviderInterface $provider A ServiceProviderInterface instance
-     * @param array                    $values   An array of values that customizes the provider
+     * @param ServiceProvider $provider A ServiceProvider instance
+     * @param array           $values   An array of values that customizes the provider
      *
      * @return static
      */

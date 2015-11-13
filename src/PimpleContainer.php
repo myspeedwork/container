@@ -256,11 +256,11 @@ class PimpleContainer implements \ArrayAccess
      */
     public function register(ServiceProvider $provider, array $values = [])
     {
-        $provider->register($this);
-
         foreach ($values as $key => $value) {
             $this[$key] = $value;
         }
+
+        $provider->register($this);
 
         return $this;
     }

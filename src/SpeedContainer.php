@@ -43,7 +43,7 @@ class SpeedContainer extends PimpleContainer
     /**
      * Set the shared instance of the container.
      *
-     * @param \Illuminate\Contracts\Container\Container $container
+     * @param \Speedwork\Container\Container $container
      */
     public static function setInstance(Container $container)
     {

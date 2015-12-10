@@ -245,23 +245,4 @@ class PimpleContainer implements \ArrayAccess
     {
         return array_keys($this->values);
     }
-
-    /**
-     * Registers a service provider.
-     *
-     * @param ServiceProvider $provider A ServiceProvider instance
-     * @param array           $values   An array of values that customizes the provider
-     *
-     * @return static
-     */
-    public function register(ServiceProvider $provider, array $values = [])
-    {
-        foreach ($values as $key => $value) {
-            $this[$key] = $value;
-        }
-
-        $provider->register($this);
-
-        return $this;
-    }
 }

@@ -46,6 +46,11 @@ abstract class ServiceProvider
         $this->config = $config;
     }
 
+    protected function getSettings($name = null)
+    {
+        return $this->app[$name] ?: $this->app['config'][$name];
+    }
+
     /**
      * Register a translation file namespace.
      *

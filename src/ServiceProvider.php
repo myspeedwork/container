@@ -46,9 +46,14 @@ abstract class ServiceProvider
         $this->config = $config;
     }
 
-    protected function getSettings($name = null)
+    protected function getSettings($name = null, $option = null)
     {
-        return $this->app[$name] ?: $this->app['config'][$name];
+        $key = $option ?: $name;
+        if ($this->app[$key]) {
+            return $this->app[$key];
+        }
+
+        return $this->app['config'][$name];
     }
 
     /**

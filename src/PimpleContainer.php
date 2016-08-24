@@ -6,9 +6,8 @@
  * @link http://github.com/speedwork
  *
  * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * file that was distributed with this source code
  */
-
 namespace Speedwork\Container;
 
 /**
@@ -30,7 +29,7 @@ class PimpleContainer implements \ArrayAccess
      *
      * Objects and parameters can be passed as argument to the constructor.
      *
-     * @param array $values The parameters or objects.
+     * @param array $values The parameters or objects
      */
     public function __construct(array $values = [])
     {
@@ -71,9 +70,9 @@ class PimpleContainer implements \ArrayAccess
      *
      * @param string $id The unique identifier for the parameter or object
      *
-     * @return mixed The value of the parameter or an object
-     *
      * @throws \InvalidArgumentException if the identifier is not defined
+     *
+     * @return mixed The value of the parameter or an object
      */
     public function offsetGet($id)
     {
@@ -136,9 +135,9 @@ class PimpleContainer implements \ArrayAccess
      *
      * @param callable $callable A service definition to be used as a factory
      *
-     * @return callable The passed callable
-     *
      * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+     *
+     * @return callable The passed callable
      */
     public function factory($callable)
     {
@@ -158,9 +157,9 @@ class PimpleContainer implements \ArrayAccess
      *
      * @param callable $callable A callable to protect from being evaluated
      *
-     * @return callable The passed callable
-     *
      * @throws \InvalidArgumentException Service definition has to be a closure of an invokable object
+     *
+     * @return callable The passed callable
      */
     public function protect($callable)
     {
@@ -178,9 +177,9 @@ class PimpleContainer implements \ArrayAccess
      *
      * @param string $id The unique identifier for the parameter or object
      *
-     * @return mixed The value of the parameter or the closure defining an object
-     *
      * @throws \InvalidArgumentException if the identifier is not defined
+     *
+     * @return mixed The value of the parameter or the closure defining an object
      */
     public function raw($id)
     {
@@ -204,9 +203,9 @@ class PimpleContainer implements \ArrayAccess
      * @param string   $id       The unique identifier for the object
      * @param callable $callable A service definition to extend the original
      *
-     * @return callable The wrapped callable
-     *
      * @throws \InvalidArgumentException if the identifier is not defined or not a service definition
+     *
+     * @return callable The wrapped callable
      */
     public function extend($id, $callable)
     {

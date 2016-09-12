@@ -3,21 +3,26 @@
     "type": "library",
     "description": "Speedwork Service Container",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "sankar",
-            "email": "sankar.suda@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "sankar",
+        "email": "sankar.suda@gmail.com"
+    }],
     "require": {
-        "php" : ">=5.4"
+        "php": ">=5.6"
     },
-    "require-dev" : {
-        "phpunit/phpunit": "~3.7",
-        "satooshi/php-coveralls": "dev-master"
+    "require-dev": {
+        "phpunit/phpunit": "~5.5",
+        "satooshi/php-coveralls": "2.*"
     },
-    "autoload" : {
-        "psr-4": { "Speedwork\\Container\\": "src" }
+    "autoload": {
+        "psr-4": {
+            "Speedwork\\Container\\": "src"
+        }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }

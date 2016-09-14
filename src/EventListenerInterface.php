@@ -18,7 +18,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * @author Sankar <sankar.suda@gmail.com>
  */
-interface EventListenerProviderInterface
+interface EventListenerInterface
 {
     public function subscribe(Container $app, EventDispatcherInterface $dispatcher);
 }

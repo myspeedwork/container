@@ -14,7 +14,7 @@ namespace Speedwork\Container;
 /**
  * @author Sankar <sankar.suda@gmail.com>
  */
-interface BootableProviderInterface
+interface BootableInterface
 {
     /**
      * Bootstraps the application.

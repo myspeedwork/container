@@ -89,7 +89,7 @@ abstract class ServiceProvider
     {
         $config = $this->app['config']->get($key);
         if (is_array($config)) {
-            $values = array_replace_recursive($config, $values);
+            $values = array_replace_recursive($values, $config);
         }
 
         return $this->app['config']->set($key, $values);
@@ -174,16 +174,6 @@ abstract class ServiceProvider
         $this->app['events']->addListener('console.init.event', function (Event $event) use ($commands) {
             $event->getConsole()->resolveCommands($commands);
         });
-    }
-
-    /**
-     * Register a database migration path.
-     *
-     * @param array|string $paths
-     */
-    protected function loadMigrationsFrom($paths)
-    {
-        $this->app['migrator']->path($paths);
     }
 
     /**

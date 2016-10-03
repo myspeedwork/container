@@ -24,11 +24,6 @@ abstract class ServiceProvider
     protected $app;
 
     /**
-     * The Service Provider config.
-     */
-    protected $config;
-
-    /**
      * The paths that should be published.
      *
      * @var array
@@ -53,16 +48,6 @@ abstract class ServiceProvider
     }
 
     /**
-     * Set Config.
-     *
-     * @param array $config [description]
-     */
-    public function setConfig($config = [])
-    {
-        $this->config = $config;
-    }
-
-    /**
      * Get the service provider settings.
      *
      * @param string $name   Name of the config
@@ -80,19 +65,47 @@ abstract class ServiceProvider
         return $this->app['config'][$name];
     }
 
+    /**
+     * Register the routes.
+     *
+     * @param array $routes
+     */
     protected function setRoutes($routes = [])
     {
-        return $this->config('router.router.routes', $routes);
+        return $this->registerConfig('router.router.routes', $routes);
     }
 
-    protected function config($key, $values = [])
+    /**
+     * Register the service provider configuration.
+     *
+     * @param array|string $key
+     * @param mixed        $value
+     *
+     * @return [type] [description]
+     */
+    protected function registerConfig($key, $value = null)
     {
-        $config = $this->app['config']->get($key);
-        if (is_array($config)) {
-            $values = array_replace_recursive($values, $config);
+        if ($this->app['files']->isFile($key)) {
+            $this->app['config.loader']->load($key, $value);
+        } elseif (is_array($key)) {
+            foreach ($key as $innerKey => $innerValue) {
+                $config = $this->app['config']->get($innerKey);
+                if (is_array($config)) {
+                    $innerValue = array_replace_recursive($innerValue, $config);
+                }
+
+                $this->app['config']->set($innerKey, $innerValue);
+            }
+        } else {
+            $config = $this->app['config']->get($key);
+            if (is_array($config)) {
+                $value = array_replace_recursive($value, $config);
+            }
+
+            $this->app['config']->set($key, $value);
         }
 
-        return $this->app['config']->set($key, $values);
+        return $this;
     }
 
     /**
@@ -109,14 +122,20 @@ abstract class ServiceProvider
             static::$publishes[$class] = [];
         }
 
-        static::$publishes[$class] = array_merge(static::$publishes[$class], $paths);
-
         if ($group) {
             if (!array_key_exists($group, static::$publishGroups)) {
                 static::$publishGroups[$group] = [];
             }
 
             static::$publishGroups[$group] = array_merge(static::$publishGroups[$group], $paths);
+
+            if (!array_key_exists($group, static::$publishes[$class])) {
+                static::$publishes[$class][$group] = [];
+            }
+
+            static::$publishes[$class][$group] = array_merge(static::$publishes[$class][$group], $paths);
+        } else {
+            static::$publishes[$class] = array_merge(static::$publishes[$class], $paths);
         }
     }
 
@@ -135,11 +154,11 @@ abstract class ServiceProvider
                 return [];
             }
 
-            return array_intersect_key(static::$publishes[$provider], static::$publishGroups[$group]);
+            return array_intersect_key(static::$publishes[$provider], [$group => static::$publishGroups[$group]]);
         }
 
         if ($group && array_key_exists($group, static::$publishGroups)) {
-            return static::$publishGroups[$group];
+            return [$group => static::$publishGroups[$group]];
         }
 
         if ($provider && array_key_exists($provider, static::$publishes)) {

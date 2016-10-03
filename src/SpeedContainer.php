@@ -78,7 +78,6 @@ class SpeedContainer extends PimpleContainer
         }
 
         $provider->setContainer($this);
-        $provider->setConfig($values);
         $provider->register($this);
 
         $this->providers[$name] = $provider;

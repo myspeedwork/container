@@ -14,7 +14,7 @@ namespace Speedwork\Container;
 /**
  * @author Sankar <sankar.suda@gmail.com>
  */
-class Container extends SpeedContainer
+class Container extends BuildContainer
 {
     /**
      * @param string $id
